@@ -124,9 +124,30 @@ To implement the nested loop in parallel, the logic is bottom up:
 3. sencondary and primary loop, parallel across job and layer 
    1. Using MPI, the 12 combinations of jobs and layers are parallelized and treated independently. The parallel execution allows for efficient processing of each combination, and the results are then combined or aggregated to obtain the final summary.
 
-For the immplementation of MPI, refer to []()
+For the immplementation of MPI, refer to [3.0_test_nn_mpi.py](https://github.com/macs30123-s23/final-project-neuroai/blob/main/3.0_test_nn_mpi.py).
 
+## Results
 
+The selectivity of units are defined by the different activation across stimuli. To define a unit to be orientation selective, it should be either significant in Horizontal VS Vertical or two tilted versions (effectively a logic_or of the two boolean maps.) To define a unit to be shape selective, it should be significant between two shape stimuli. For the conjunction unit, it should be significant in both selectivity (effectivly a logic_and of the two selective maps).
+
+![Orientation Selective](https://p.ipic.vip/2mk256.png)
+
+![Shape Selective](https://p.ipic.vip/hunbek.png)
+
+![Conjunction](https://p.ipic.vip/ou1pj0.png)
+
+The three figures shows the proportion of units that are selective in three cases. 
+
+Notablely, when camparing the performance of V4 and IT, the trend converages to the observation in vivo （As the in vivo study is still on-going, I will not show the exact data here). 
+
+## Limitations
+
+Although this study presents preliminary results, it is important to acknowledge that further tests regarding the rigor of the observations need to be considered:
+
+1. Multi-comparision Correction.
+2. Expanding examplar size, with white noise
+3. Effect size (Cohen's d) as discrimination measruement
+4. Constructing confidence interval using bootstrapping for cross-layer comparision
 
 ## References
 
