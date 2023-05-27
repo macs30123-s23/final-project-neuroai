@@ -9,6 +9,8 @@ Strategy:
 """
 import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image
+import io
 import os
 
 img_path = '/Users/anmin/Documents/Courses/2023Spring/Large_scale_computing\
@@ -38,8 +40,8 @@ def gen_ver_hor_grating(is_vertical=True):
         plt.savefig(os.path.join(img_path,
                                  type_name,
                                  f'{i}.png'), 
-                    bbox_inches='tight', 
-                    pad_inches=0
+                    pad_inches=0, 
+                    bbox_inches='tight'
                     )
         plt.close()
 
