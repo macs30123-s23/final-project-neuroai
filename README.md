@@ -77,7 +77,7 @@ The basic policy for generating such image is:
 
 ## Computation Challenges
 
-To probe the selectivity of each unit at each layer, I have to feed one image to the neural network, truncate the model at the layer of interest, record the activation of the unit, store the actications across stimuli, and ultimately perform independent sample t-test to determin the selectivity of the unit. The whole process will ended in a nested for loop.
+To probe the selectivity of each unit at each layer, I have to feed one image to the neural network, truncate the model at the layer of interest, record the activation of the unit, store the actications across stimuli, and ultimately perform independent sample t-test to determin the selectivity of the unit. The whole process will end in a nested for loop.
 
 ```py
 laysers = ['V1', 'V2', 'V4', 'IT']
