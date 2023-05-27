@@ -40,11 +40,30 @@ Four conditions of stimuli are generated and treated as two groups:
 - Horizontal VS Vertival
 - Tilted by 45 and Tilted by 134
 
-For the generation code, please refer to 
+For the generation code, please refer to [1.0_gen_grating_HV.py](https://github.com/macs30123-s23/final-project-neuroai/blob/main/1.0_gen_grating_HV.py) and [1.1_gen_grating_tilt.py](https://github.com/macs30123-s23/final-project-neuroai/blob/main/1.1_gen_grating_tilt.py).
+
+The policy for generating such images is: 
+
+1. Generate a large background image 
+2. Move the slicing window across the image: window size = 224x224
+3. Moving step: 1
 
 <img src="https://p.ipic.vip/kijxas.png" alt="example" style="zoom:24%;" />
 
-**Figure 3.** Examples of Orientation stimuli
+**Figure 3.** Examples of Orientation stimuli.
+
+### Shape
+
+Two levels of shape stimuli are generated: Circle and Triangle. Note for tirangle, I introduced some randomness of orientation. 
+
+For the generation code, please refer to [1.2_gen_shape.py](https://github.com/macs30123-s23/final-project-neuroai/blob/main/1.2_gen_shape.py).
+
+The basic policy for generating such image is:
+
+1. Generate base image (one circle or triangle)
+2. Exapnd the base image to the background image
+3. Move the slicing window across the image: window size = 224x224
+4. Moving step: 1
 
 
 
