@@ -20,7 +20,7 @@ The question remains as whether the representaion of simiple geometry would be r
 
 I used CORnet [(Kubilius et al., 2018)](https://www.biorxiv.org/content/10.1101/408385v1.abstract) as the target model for the comparision. CORnets are designed to directly micic ventral pathway of the primate visual system and come with both DNN and RNN. In particular, CORnet-Z is the simple feedforward version, with each layer has a direct compariable cortex. All of the CORnets are optimized for ImageNet classification task. 
 
-<img src="https://p.ipic.vip/tfunhu.png" alt="Screenshot 2023-05-26 at 19.20.41" style="zoom:50%;" />
+<img src="https://p.ipic.vip/fwbvw5.png" alt="Screenshot 2023-05-26 at 19.20.41" style="zoom:25%;" />
 
 **Figure 2.** Architecture of CORnet-Z. Adapted from [(Kubilius et al., 2018)](https://www.biorxiv.org/content/10.1101/408385v1.abstract).
 
