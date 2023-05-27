@@ -124,7 +124,7 @@ Parallel solution to the nested loop.
 To implement the nested loop in parallel, the logic is bottom up:
 
 1. quaternary loop, parallel across units
-   1. As the turncated model returns an array of units, it is much slower if iterate through every unit, especially when one layer contains millions of units. This process could be parallelized by vectrize the actications as a matrix, with each row representing the observations (number of pictures), each columns as the unit, and returns a boolean array for each layer in each job
+   1. As the turncated model returns an array of units, it is much slower if iterate through every unit, especially when one layer contains millions of units. This process could be parallelized by vecterizing the actications as a matrix, with each row representing the observations (number of pictures), each columns as the unit, and returns a boolean array for each layer in each job
 2. tertiary loop, parallel across stimuli
    1. pytorch supports feeding a batch of images and returns a tensor with the row as observations and columns as features
 3. sencondary and primary loop, parallel across job and layer 
