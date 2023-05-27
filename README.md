@@ -130,7 +130,7 @@ For the immplementation of MPI, refer to [3.0_test_nn_mpi.py](https://github.com
 
 The selectivity of units are defined by the different activation across stimuli. To define a unit to be orientation selective, it should be either significant in Horizontal VS Vertical or two tilted versions (effectively a logic_or of the two boolean maps.) To define a unit to be shape selective, it should be significant between two shape stimuli. For the conjunction unit, it should be significant in both selectivity (effectivly a logic_and of the two selective maps).
 
-![Orientation Selective](https://p.ipic.vip/2mk256.png)
+<img src="https://p.ipic.vip/zjcmc4.png" alt="Orientation Selective"  height="300"  />
 
 ![Shape Selective](https://p.ipic.vip/hunbek.png)
 
