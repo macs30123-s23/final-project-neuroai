@@ -6,7 +6,9 @@ This is the GitHub repository for the final project of MACS 30123 Large Scale Co
 
 The progress made in Deep Neural Networks (DNN) has brought about significant transformations in the field of artificial intelligence. Moreover, for scientists who are dedicated to understanding and replicating the intricate workings of natural intelligence, DNNs have emerged as the most effective model for simulating the primate visual system along the ventral pathway([Yamins and DiCarlo, 2016](https://www.nature.com/articles/nn.4244)).  Systematic comparision between DNNs and primate visual system suggests that while not constrained by neural data, the two systems converges at the representation of objects (Figure 1). 
 
+<p align="center">
 ![Fig.1](https://p.ipic.vip/p9op9m.png)
+</p>
 
 **Figure 1.** Demostration of comparision between the brain and DNNs. Adapeted from [(Yamins and DiCarlo, 2016)](https://www.nature.com/articles/nn.4244).
 
@@ -20,7 +22,9 @@ The question remains as whether the representaion of simiple geometry would be r
 
 I used CORnet [(Kubilius et al., 2018)](https://www.biorxiv.org/content/10.1101/408385v1.abstract) as the target model for the comparision. CORnets are designed to directly micic ventral pathway of the primate visual system and come with both DNN and RNN. In particular, CORnet-Z is the simple feedforward version, with each layer has a direct compariable cortex. All of the CORnets are optimized for ImageNet classification task. 
 
+<p align="center">
 <img src="https://github.com/macs30123-s23/final-project-neuroai/blob/main/figures/model_parameters.png" alt="parameters" width="300" />
+</p>
 
 **Figure 2.** Architecture of CORnet-Z. Adapted from [(Kubilius et al., 2018)](https://www.biorxiv.org/content/10.1101/408385v1.abstract).
 
