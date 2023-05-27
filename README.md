@@ -48,7 +48,7 @@ The policy for generating such images is:
 2. Move the slicing window across the image: window size = 224x224
 3. Moving step: 1
 
-<img src="https://p.ipic.vip/kijxas.png" alt="example" width="400"  />
+<img src="https://p.ipic.vip/kijxas.png" alt="example" />
 
 **Figure 3.** Examples of Orientation stimuli. The horizontal and vertical stimuli each has 39 examplars, and the tilted version each has 28 exemplars. 
 
