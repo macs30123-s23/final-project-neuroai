@@ -69,7 +69,9 @@ The basic policy for generating such image is:
 3. Move the slicing window across the image: window size = 224x224
 4. Moving step: 1
 
+<p align="center">
 <img src="https://p.ipic.vip/zjcmc4.png" alt="shape_example" width="400" />
+</p>
 
 **Figure 4.** Examples of Shape stimuli. Each shape has 529 examplars. However, in this study, 40 examplars are randomly drawn from the stimuli pool. 
 
@@ -134,11 +136,17 @@ For the immplementation of MPI, refer to [3.0_test_nn_mpi.py](https://github.com
 
 The selectivity of units are defined by the different activation across stimuli. To define a unit to be orientation selective, it should be either significant in Horizontal VS Vertical or two tilted versions (effectively a logic_or of the two boolean maps.) To define a unit to be shape selective, it should be significant between two shape stimuli. For the conjunction unit, it should be significant in both selectivity (effectivly a logic_and of the two selective maps).
 
+<p align="center">
 <img src="https://p.ipic.vip/2mk256.png" alt="Orientation Selective" width="500" />
+</p>
 
+<p align="center">
 <img src="https://p.ipic.vip/hunbek.png" alt="Shape Selective" width="500" />
+</p>
 
+<p align="center">
 <img src="https://p.ipic.vip/ou1pj0.png" alt="Conjunction" width="500" />
+</p>
 
 The three figures shows the proportion of units that are selective in three cases. 
 
