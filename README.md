@@ -7,7 +7,7 @@ This is the GitHub repository for the final project of MACS 30123 Large Scale Co
 The progress made in Deep Neural Networks (DNN) has brought about significant transformations in the field of artificial intelligence. Moreover, for scientists who are dedicated to understanding and replicating the intricate workings of natural intelligence, DNNs have emerged as the most effective model for simulating the primate visual system along the ventral pathway([Yamins and DiCarlo, 2016](https://www.nature.com/articles/nn.4244)).  Systematic comparision between DNNs and primate visual system suggests that while not constrained by neural data, the two systems converges at the representation of objects (Figure 1). 
 
 <p align="center">
-![Fig.1](https://p.ipic.vip/p9op9m.png)
+<img src="https://p.ipic.vip/p9op9m.png" alt="intro" />
 </p>
 
 **Figure 1.** Demostration of comparision between the brain and DNNs. Adapeted from [(Yamins and DiCarlo, 2016)](https://www.nature.com/articles/nn.4244).
