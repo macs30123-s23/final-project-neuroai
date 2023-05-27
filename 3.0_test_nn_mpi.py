@@ -17,10 +17,15 @@ from PIL import Image
 
 import matplotlib.pyplot as plt
 import seaborn as sns
+
 from mpi4py import MPI
 
 Image.warnings.simplefilter('ignore')
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
+size = comm.Get_size()
 
 np.random.seed(0)
 torch.manual_seed(0)
@@ -66,7 +71,7 @@ def test(layer='V1', sublayer='pool', time_step=0, imsize=224, img_path='test.pn
         default: 224
     img_path: str
         path to image of interest
-        img as batches
+        restricted to one image at a time
 
     Returns
     -------
@@ -100,7 +105,7 @@ def test(layer='V1', sublayer='pool', time_step=0, imsize=224, img_path='test.pn
         model_feats.append(_model_feats[time_step])
         model_feats = np.concatenate(model_feats)
 
-    return model_feats
+    return model_feats[0]
 
 def get_unit_size():
     """
@@ -147,19 +152,57 @@ def get_bool_map(layer, job):
     if job == 'grating_hv':
         img_path_a = os.path.join(img_path, 'h')
         img_path_b = os.path.join(img_path, 'v')
+        file_names_a = os.listdir(img_path_a)
+        file_names_b = os.listdir(img_path_b)
     elif job == 'grating_tilt':
         img_path_a = os.path.join(img_path, 'tilt_45')
         img_path_b = os.path.join(img_path, 'tilt_135')
+        file_names_a = os.listdir(os.path.join(img_path_a))
+        file_names_b = os.listdir(os.path.join(img_path_b))
     else: # job == 'shape'
         img_path_a = os.path.join(img_path, 'circle')
         img_path_b = os.path.join(img_path, 'triangle')
+        file_names_a = os.listdir(img_path_a)
+        file_names_b = os.listdir(img_path_b)
 
-    act_a, act_b = [], []
-    act_a = test(layer=layer,
-                img_path=img_path_a).tolist()  
-    act_b = test(layer=layer,
-                img_path=img_path_b).tolist()  
-        
+        # randomly sample 40 images from each category
+        file_names_a = np.random.choice(file_names_a, 40, replace=False)
+        file_names_b = np.random.choice(file_names_b, 40, replace=False)
+    
+    if '.DS_Store' in file_names_a:
+        file_names_a.remove('.DS_Store')
+    if '.DS_Store' in file_names_b:
+        file_names_b.remove('.DS_Store')
+
+    # Combine file names from both file_names_a and file_names_b
+    all_file_names = file_names_a + file_names_b
+
+    act = []
+
+    # Divide the file names among processes
+    chunk_size = len(all_file_names) // size
+    file_names_chunk = all_file_names[rank * chunk_size:(rank + 1) * chunk_size]
+
+    # Iterate over the file names chunk and read activations
+    for file_name in file_names_chunk:
+        if file_name in file_names_a:
+            img_path = img_path_a
+        else:
+            img_path = img_path_b
+        act.append(test(layer=layer, img_path=os.path.join(img_path, file_name)).tolist())
+
+    # Gather the activations from all processes
+    all_act = comm.gather(act, root=0)
+
+    # Root process combines and stores all activations
+    if rank == 0:
+        combined_act = []
+        for proc_act in all_act:
+            combined_act.extend(proc_act)
+    # parcel the combined act to act_a and act_b
+    act_a = combined_act[:len(file_names_a)]
+    act_b = combined_act[len(file_names_a):]
+
     # independent sample t-test
     _, p = ttest_ind(np.array(act_a), np.array(act_b))
 
@@ -180,45 +223,17 @@ def set_parameters():
 
 def main():
     start = time.time()
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
-    size = comm.Get_size()
-
     layers = ['V1', 'V2', 'V4', 'IT']
-    jobs = ['grating_hv', 'grating_tilt', 'shape']
-    
-    chunk_size = len(layers) // size
-    layers_chunk = layers[rank * chunk_size:(rank + 1) * chunk_size]
-
     bool_maps = {}
-
-    # Process layers and jobs assigned to this process
-    for layer in layers_chunk:
+    for layer in layers:
         if layer not in bool_maps:
             bool_maps[layer] = {}
-
-        for job in jobs:
-            bool_map = get_bool_map(layer, job)  # Perform your computation here
+        
+        for job in ['grating_hv', 'grating_tilt', 'shape']:
+            bool_map = get_bool_map(layer, job)
             bool_maps[layer][job] = bool_map
             print(f'finished {job} in {layer}')
-
-    # Gather bool_maps from all processes onto the root process
-    all_bool_maps = comm.gather(bool_maps, root=0)
-
-    # Combine bool_maps on the root process
-    if rank == 0:
-        combined_bool_maps = {}
-
-        # Merge bool_maps from all processes into combined_bool_maps
-        for proc_bool_maps in all_bool_maps:
-            for layer, layer_bool_maps in proc_bool_maps.items():
-                if layer not in combined_bool_maps:
-                    combined_bool_maps[layer] = {}
-
-                for job, bool_map in layer_bool_maps.items():
-                    combined_bool_maps[layer][job] = bool_map
-
-    #np.save('bool_maps.npy', bool_maps)
+    np.save('bool_maps.npy', bool_maps)
     print(f'finished in {time.time() - start} seconds')
 
 def summary():
@@ -245,12 +260,9 @@ def summary():
 
     
     # construct dataframe for visualization
-    df_orientation = pd.DataFrame({'layer': layers, 
-                                   'proportion': orientation})
-    df_shape = pd.DataFrame({'layer': layers, 
-                             'proportion': shape})
-    df_orientation_shape = pd.DataFrame({'layer': layers, 
-                                         'proportion': orientation_shape})
+    df_orientation = pd.DataFrame({'layer': layers, 'proportion': orientation})
+    df_shape = pd.DataFrame({'layer': layers, 'proportion': shape})
+    df_orientation_shape = pd.DataFrame({'layer': layers, 'proportion': orientation_shape})
 
 def sub_plot(df, title, filename):
     sns.barplot(x='layer', y='proportion', data=df)
@@ -261,15 +273,9 @@ def sub_plot(df, title, filename):
     plt.close()
 
 def plot():
-    sub_plot(df_orientation, 
-             'Orientation Selective', 
-             'Orientation Selective.png')
-    sub_plot(df_shape, 
-             'Shape Selective', 
-             'Shape Selective.png')
-    sub_plot(df_orientation_shape, 
-             'Orientation and Shape Selective', 
-             'Conjunction.png')
+    sub_plot(df_orientation, 'Orientation Selective', 'Orientation Selective.png')
+    sub_plot(df_shape, 'Shape Selective', 'Shape Selective.png')
+    sub_plot(df_orientation_shape, 'Orientation and Shape Selective', 'Conjunction.png')
             
 
 

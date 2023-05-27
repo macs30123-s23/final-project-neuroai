@@ -50,7 +50,7 @@ The policy for generating such images is:
 
 <img src="https://p.ipic.vip/kijxas.png" alt="example" style="zoom:24%;" />
 
-**Figure 3.** Examples of Orientation stimuli.
+**Figure 3.** Examples of Orientation stimuli. The horizontal and vertical stimuli each has 39 examplars, and the tilted version each has 28 exemplars. 
 
 ### Shape
 
@@ -65,7 +65,66 @@ The basic policy for generating such image is:
 3. Move the slicing window across the image: window size = 224x224
 4. Moving step: 1
 
+<img src="https://p.ipic.vip/zjcmc4.png" alt="shape_example" style="zoom:10%;" />
 
+**Figure 4.** Examples of Shape stimuli. Each shape has 529 examplars. However, in this study, 40 examplars are randomly drawn from the stimuli pool. 
+
+## Computation Challenges
+
+To probe the selectivity of each unit at each layer, I have to feed one image to the neural network, truncate the model at the layer of interest, record the activation of the unit, store the actications across stimuli, and ultimately perform independent sample t-test to determin the selectivity of the unit. The whole process will ended in a nested for loop.
+
+```py
+laysers = ['V1', 'V2', 'V4', 'IT']
+jobs = ['grating_hv', 'grating_tilt', 'shape']
+for layer in layers: # primary loop, select the layer of interest
+  for job in jobs: # secondary loop, selsect the type of stimuli
+    for im in im_pool: # tertiary loop, feed one image at one time
+      for unit in units: # quaternary loop, probe the selectivity of the unit
+        p = get_p_value_wiht_ind_t-test()
+        if p < 0.05:
+          #True
+```
+
+- number of units across layers
+  - 'V1': 200704 
+  - 'V2': 100352
+  -  'V4': 50176
+  - 'IT': 25088
+- 4 types of jobs 
+- each job average 40 stimuli
+
+The total number of operation is 376320 * 4 * 40 (around **60 million**).
+
+I implemented the nested_loop version, please refer to [2.0_test_nn.py](https://github.com/macs30123-s23/final-project-neuroai/blob/main/2.0_test_nn.py). Given the fact that the examplars are not large, the nested loop version would work at small scale, but certainly not appliable if the experiment scales up. 
+
+To tackle the nested loop problem, I offer two solutions:
+
+### Use Lambda Function
+
+Given the fact that the fundamental operation unit is to hold the activation of one unit across mulitple stimuli, and then compare the activation through statistical inference, the lambda function includes:
+
+1. Target for one job
+2. Target for one layer
+3. Target for one unit
+4. Records the activations under multiple stimuli
+5. Perfrom statistical inference 
+6. Return a boolean value
+7. Store to S3 bucket
+
+### Use MPI
+
+Parallel solution to the nested loop. 
+
+To implement the nested loop in parallel, the logic is bottom up:
+
+1. quaternary loop, parallel across units
+   1. As the turncated model returns an array of units, it is much slower if iterate through every unit, especially when one layer contains millions of units. This process could be parallelized by vectrize the actications as a matrix, with each row representing the observations (number of pictures), each columns as the unit, and returns a boolean array for each layer in each job
+2. tertiary loop, parallel across stimuli
+   1. pytorch supports feeding a batch of images and returns a tensor with the row as observations and columns as features
+3. sencondary and primary loop, parallel across job and layer 
+   1. Using MPI, the 12 combinations of jobs and layers are parallelized and treated independently. The parallel execution allows for efficient processing of each combination, and the results are then combined or aggregated to obtain the final summary.
+
+For the immplementation of MPI, refer to []()
 
 
 
