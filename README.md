@@ -65,7 +65,7 @@ The basic policy for generating such image is:
 3. Move the slicing window across the image: window size = 224x224
 4. Moving step: 1
 
-<img src="https://p.ipic.vip/zjcmc4.png" alt="shape_example" style="zoom:10%;" />
+<img src="https://p.ipic.vip/zjcmc4.png" alt="shape_example"  width="400"  />
 
 **Figure 4.** Examples of Shape stimuli. Each shape has 529 examplars. However, in this study, 40 examplars are randomly drawn from the stimuli pool. 
 
